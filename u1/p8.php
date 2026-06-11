@@ -1,19 +1,17 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $input = $_POST['fruits'];
-    $myarray = explode(",", $input);
-    
-    echo "You entered:<br>";
-    foreach($myarray as $fruits){
-        echo trim($fruits) . "<br>";
-    }
-} else {
+$nm = $_GET['uname'];
+echo "<h3> Entered Values:</h3>";
+foreach($nm as $val){
+    echo $val."<br>";
+}
+
 ?>
     <form method="post">
-        Enter fruit names (separated by comma):<br>
-        <input type="text" name="fruits" placeholder="enter fruits names">
-        <br><br>
-        <input type="submit" value="Submit">
+        <h3> Enter Names </h3>
+        <input type="text" name ="uname[0]"> <br>
+        <input type="text" name ="uname[1]"> <br>
+        <input type="text" name ="uname[2]"> <br>
+        
     </form>
 <?php
 }
