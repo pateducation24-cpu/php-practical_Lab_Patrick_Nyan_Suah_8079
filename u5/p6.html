@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration with Password Strength</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 4px; }
+        input:focus { outline: none; border-color: #4CAF50; }
+        .password-strength {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .weak { background: #ffcccc; color: #cc0000; }
+        .medium { background: #ffffcc; color: #cc9900; }
+        .strong { background: #ccffcc; color: #006600; }
+        .error { color: red; font-size: 12px; margin-top: 5px; }
+        .btn { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        .btn:hover { background: #45a049; }
+        .btn:disabled { background: #cccccc; cursor: not-allowed; }
+        .status-bar { 
+            height: 5px; 
+            margin-top: 5px;
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+        .bar-weak { width: 33%; background: #ff0000; }
+        .bar-medium { width: 66%; background: #ff9900; }
+        .bar-strong { width: 100%; background: #00cc00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📝 Registration Form</h2>
+        
+        <form id="registrationForm" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label>Full Name:</label>
+                <input type="text" id="name" placeholder="Enter your name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="password" placeholder="Enter password" onkeyup="checkPasswordStrength()">
+                <div id="strengthStatus" class="password-strength"></div>
+                <div id="strengthBar" class="status-bar"></div>
+                <div id="passwordError" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Confirm Password:</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm password" onkeyup="checkPasswordMatch()">
+                <div id="confirmError" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Phone:</label>
+                <input type="text" id="phone" placeholder="Enter phone number" required>
+            </div>
+            
+            <button type="submit" id="submitBtn" class="btn">Register</button>
+        </form>
+    </div>
+
+    <script>
+        function checkPasswordStrength() {
+            var password = document.getElementById("password").value;
+            var strengthStatus = document.getElementById("strengthStatus");
+            var strengthBar = document.getElementById("strengthBar");
+            var passwordError = document.getElementById("passwordError");
+            var submitBtn = document.getElementById("submitBtn");
+            
+            // Check length
+            if (password.length === 0) {
+                strengthStatus.innerHTML = "";
+                strengthStatus.className = "password-strength";
+                strengthBar.className = "status-bar";
+                passwordError.innerHTML = "";
+                submitBtn.disabled = false;
+                return;
+            }
+            
+            if (password.length < 6) {
+                strengthStatus.innerHTML = "❌ Weak - Minimum 6 characters required";
+                strengthStatus.className = "password-strength weak";
+                strengthBar.className = "status-bar bar-weak";
+                passwordError.innerHTML = "Password must be at least 6 characters!";
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            // Check password strength
+            var strength = getPasswordStrength(password);
+            
+            if (strength === "weak") {
+                strengthStatus.innerHTML = "🔴 Weak - Add uppercase, lowercase, numbers, and special characters";
+                strengthStatus.className = "password-strength weak";
+                strengthBar.className = "status-bar bar-weak";
+                passwordError.innerHTML = "";
+                submitBtn.disabled = false;
+            } else if (strength === "medium") {
+                strengthStatus.innerHTML = "🟡 Medium - Add more variety for stronger password";
+                strengthStatus.className = "password-strength medium";
+                strengthBar.className = "status-bar bar-medium";
+                passwordError.innerHTML = "";
+                submitBtn.disabled = false;
+            } else {
+                strengthStatus.innerHTML = "🟢 Strong - Excellent password!";
+                strengthStatus.className = "password-strength strong";
+                strengthBar.className = "status-bar bar-strong";
+                passwordError.innerHTML = "";
+                submitBtn.disabled = false;
+            }
+            
+            // Check confirm password match
+            checkPasswordMatch();
+        }
+        
+        function getPasswordStrength(password) {
+            var strength = 0;
+            
+            // Check length
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Check for uppercase
+            if (password.match(/[A-Z]/)) strength++;
+            
+            // Check for lowercase
+            if (password.match(/[a-z]/)) strength++;
+            
+            // Check for numbers
+            if (password.match(/[0-9]/)) strength++;
+            
+            // Check for special characters
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            // Determine strength
+            if (strength <= 2) return "weak";
+            else if (strength <= 4) return "medium";
+            else return "strong";
+        }
+        
+        function checkPasswordMatch() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var confirmError = document.getElementById("confirmError");
+            
+            if (confirmPassword.length === 0) {
+                confirmError.innerHTML = "";
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                confirmError.innerHTML = "❌ Passwords do not match!";
+            } else {
+                confirmError.innerHTML = "✅ Passwords match!";
+                confirmError.style.color = "green";
+            }
+        }
+        
+        function validateForm() {
+            var password = document.getElementById("password").value;
+            
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long!");
+                return false;
+            }
+            
+            alert("✅ Registration successful!");
+            return false; // Prevent actual submission for demo
+        }
+    </script>
+</body>
+</html>

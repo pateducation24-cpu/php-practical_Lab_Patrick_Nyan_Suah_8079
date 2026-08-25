@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cookie Example</title>
+</head>
+<body>
+    <h2>Cookie Storage Example</h2>
+    
+    <label>Enter value to store:</label>
+    <input type="text" id="userInput">
+    <button onclick="saveCookie()">Save to Cookie</button>
+    <br><br>
+    
+    <button onclick="getCookie()">Retrieve Cookie</button>
+    <button onclick="deleteCookie()">Delete Cookie</button>
+    <br><br>
+    
+    <div id="display"></div>
+
+    <script>
+        // Function to save cookie
+        function saveCookie() {
+            var value = document.getElementById("userInput").value;
+            if (value == "") {
+                alert("Please enter a value!");
+                return;
+            }
+            
+            // Set cookie with name "userData" and value
+            document.cookie = "userData=" + value + "; path=/";
+            document.getElementById("display").innerHTML = "Cookie saved: " + value;
+        }
+        
+        // Function to get cookie
+        function getCookie() {
+            var cookies = document.cookie.split(';');
+            var found = false;
+            
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.indexOf("userData=") == 0) {
+                    var value = cookie.substring("userData=".length);
+                    document.getElementById("display").innerHTML = "Cookie value: " + value;
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                document.getElementById("display").innerHTML = "No cookie found!";
+            }
+        }
+        
+        // Function to delete cookie
+        function deleteCookie() {
+            document.cookie = "userData=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            document.getElementById("display").innerHTML = "Cookie deleted!";
+            document.getElementById("userInput").value = "";
+        }
+    </script>
+</body>
+</html>
